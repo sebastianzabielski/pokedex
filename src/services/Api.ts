@@ -10,3 +10,7 @@ export const request = axios.create({
     'Content-Type': 'application/json',
   },
 });
+
+export default {
+  request,
+};

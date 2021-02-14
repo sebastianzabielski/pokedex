@@ -21,14 +21,20 @@ export const slice = createSlice({
     setPokemon: (state, action) => {
       state.pokemonDetails[action.payload.name] = action.payload;
     },
+    addPokemons: (state, action) => {
+      state.pokemonDetails = { ...state.pokemonDetails, ...action.payload };
+    },
   },
 });
 
-export const { setPokemon } = slice.actions;
+export const { setPokemon, addPokemons } = slice.actions;
 
 export const pokemonDetails = (state: RootState, key: string) =>
   state.details.pokemonDetails[key];
 
+const queue: (() => Promise<void>)[] = [];
+
+let queueDuringExecution = false;
 export const getPokemonDetails = ({
   name,
   url,
@@ -36,12 +42,29 @@ export const getPokemonDetails = ({
   name: string;
   url: string;
 }) => async (dispatch: Dispatch) => {
-  const response = await Api.request({
-    url,
-    method: 'GET',
+  queue.push(async () => {
+    //TODO try catch
+
+    const response = await Api.request({
+      url,
+      method: 'GET',
+    });
+    //TODO remove unused data
+
+    //TODO execute as async
+    dispatch(setPokemon(response.data));
   });
-  //TODO remove unused data
-  dispatch(setPokemon(response.data));
+
+  if (queueDuringExecution) {
+    return;
+  }
+
+  queueDuringExecution = true;
+  while (queue.length > 0) {
+    const callback = queue.shift();
+    callback && (await callback());
+  }
+  queueDuringExecution = false;
 };
 
 export default slice.reducer;

@@ -1,4 +1,4 @@
-export type PokemonBasicModel = {
+export type PokemonBaseModel = {
   name: string;
   url: string;
 };

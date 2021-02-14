@@ -3,4 +3,6 @@ export default {
   card: '#10161d',
   component: '#203144',
   white: '#ffffff',
+  gray: '#b8b8b8',
+  red: 'red',
 };

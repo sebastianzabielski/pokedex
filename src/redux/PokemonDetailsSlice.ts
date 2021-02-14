@@ -1,12 +1,13 @@
-import { createSlice, Slice, Dispatch, createSelector } from '@reduxjs/toolkit';
+import { createSlice, Dispatch } from '@reduxjs/toolkit';
 import Api from '../services/Api';
 import Store, { RootState } from './Store';
+import { PokemonDetailsModel } from '../models/Details.model';
+import { PokemonBaseModel } from '../models/Pokemon.model';
 
 type State = {
   pokemonDetails: {
-    [key: string]: {
-      //TODO
-    };
+    [key: string]: PokemonDetailsModel &
+      ({ error: boolean } & PokemonBaseModel);
   };
 };
 
@@ -32,7 +33,11 @@ export const { setPokemon, addPokemons } = slice.actions;
 export const pokemonDetails = (state: RootState, key: string) =>
   state.details.pokemonDetails[key];
 
-const queue: (() => Promise<void>)[] = [];
+let queue: (() => Promise<void>)[] = [];
+
+export const clearQueue = () => {
+  queue = [];
+};
 
 let queueDuringExecution = false;
 export const getPokemonDetails = ({
@@ -43,16 +48,17 @@ export const getPokemonDetails = ({
   url: string;
 }) => async (dispatch: Dispatch) => {
   queue.push(async () => {
-    //TODO try catch
-
-    const response = await Api.request({
-      url,
-      method: 'GET',
-    });
-    //TODO remove unused data
-
-    //TODO execute as async
-    dispatch(setPokemon(response.data));
+    if (!Store.getState().details.pokemonDetails[name]) {
+      try {
+        const response = await Api.request({
+          url,
+          method: 'GET',
+        });
+        dispatch(setPokemon(response.data));
+      } catch (err) {
+        dispatch(setPokemon({ url, name, error: true }));
+      }
+    }
   });
 
   if (queueDuringExecution) {

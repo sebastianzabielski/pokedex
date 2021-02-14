@@ -12,6 +12,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import Translation from '../services/Translation';
 import Favorite from '../components/Favorite';
 import { PokemonDetailsStatsModel } from '../models/Details.model';
+import { RootState } from '../redux/Store';
 
 const WIDTH = Dimensions.get('window').width;
 
@@ -31,10 +32,10 @@ export const Details = ({ route }: DetailsProps) => {
   const dispatch = useDispatch();
 
   const pokemon = useSelector((state) =>
-    pokemonDetails(state, route.params.pokemon.name),
+    pokemonDetails(state as RootState, route.params.pokemon.name),
   );
   const favorite = useSelector((state) =>
-    isFavorite(state, route.params.pokemon.name),
+    isFavorite(state as RootState, route.params.pokemon.name),
   );
 
   const renderItem = useCallback(

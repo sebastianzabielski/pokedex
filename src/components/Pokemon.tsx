@@ -25,6 +25,7 @@ import {
 import { PokemonBaseModel } from '../models/Pokemon.model';
 import Favorite from './Favorite';
 import Loader from './Loader';
+import { RootState } from '../redux/Store';
 
 const WIDTH = Dimensions.get('window').width / 3;
 
@@ -35,8 +36,12 @@ type PokemonProps = {
 export const Pokemon = React.memo(({ pokemon }: PokemonProps) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const data = useSelector((state) => pokemonDetails(state, pokemon.name));
-  const favorite = useSelector((state) => isFavorite(state, pokemon.name));
+  const data = useSelector((state) =>
+    pokemonDetails(state as RootState, pokemon.name),
+  );
+  const favorite = useSelector((state) =>
+    isFavorite(state as RootState, pokemon.name),
+  );
 
   useEffect(() => {
     if (!data) {

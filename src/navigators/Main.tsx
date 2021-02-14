@@ -5,8 +5,16 @@ import TabNavigator from './Tab';
 
 import { Details } from '../screens';
 import { HeaderLogo } from '../components';
+import { PokemonBaseModel } from '../models/Pokemon.model';
 
-const Stack = createStackNavigator();
+export type MainNavigatorParamList = {
+  Home: undefined;
+  Details: {
+    pokemon: PokemonBaseModel;
+  };
+};
+
+const Stack = createStackNavigator<MainNavigatorParamList>();
 
 export const Main = () => (
   <Stack.Navigator

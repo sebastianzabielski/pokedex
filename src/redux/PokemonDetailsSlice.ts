@@ -1,12 +1,13 @@
-import { createSlice, Slice, Dispatch, createSelector } from '@reduxjs/toolkit';
+import { createSlice, Dispatch } from '@reduxjs/toolkit';
 import Api from '../services/Api';
 import Store, { RootState } from './Store';
+import { PokemonDetailsModel } from '../models/Details.model';
+import { PokemonBaseModel } from '../models/Pokemon.model';
 
 type State = {
   pokemonDetails: {
-    [key: string]: {
-      //TODO
-    };
+    [key: string]: PokemonDetailsModel &
+      ({ error: boolean } & PokemonBaseModel);
   };
 };
 
@@ -21,14 +22,24 @@ export const slice = createSlice({
     setPokemon: (state, action) => {
       state.pokemonDetails[action.payload.name] = action.payload;
     },
+    addPokemons: (state, action) => {
+      state.pokemonDetails = { ...state.pokemonDetails, ...action.payload };
+    },
   },
 });
 
-export const { setPokemon } = slice.actions;
+export const { setPokemon, addPokemons } = slice.actions;
 
 export const pokemonDetails = (state: RootState, key: string) =>
   state.details.pokemonDetails[key];
 
+let queue: (() => Promise<void>)[] = [];
+
+export const clearQueue = () => {
+  queue = [];
+};
+
+let queueDuringExecution = false;
 export const getPokemonDetails = ({
   name,
   url,
@@ -36,12 +47,30 @@ export const getPokemonDetails = ({
   name: string;
   url: string;
 }) => async (dispatch: Dispatch) => {
-  const response = await Api.request({
-    url,
-    method: 'GET',
+  queue.push(async () => {
+    if (!Store.getState().details.pokemonDetails[name]) {
+      try {
+        const response = await Api.request({
+          url,
+          method: 'GET',
+        });
+        dispatch(setPokemon(response.data));
+      } catch (err) {
+        dispatch(setPokemon({ url, name, error: true }));
+      }
+    }
   });
-  //TODO remove unused data
-  dispatch(setPokemon(response.data));
+
+  if (queueDuringExecution) {
+    return;
+  }
+
+  queueDuringExecution = true;
+  while (queue.length > 0) {
+    const callback = queue.shift();
+    callback && (await callback());
+  }
+  queueDuringExecution = false;
 };
 
 export default slice.reducer;

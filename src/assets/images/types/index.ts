@@ -1,6 +1,7 @@
 import { ImageRequireSource } from 'react-native';
+import { Types } from '../../../models/Types.model';
 
-const images: { [key: string]: ImageRequireSource } = {
+const images: { [key in Types]: ImageRequireSource } = {
   bug: require('./bug.png'),
   dark: require('./dark.png'),
   dragon: require('./dragon.png'),

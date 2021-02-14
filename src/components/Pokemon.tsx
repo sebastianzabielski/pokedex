@@ -9,7 +9,6 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import TypeImages from '../assets/images/types';
-import {} from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import Colors from '../styles/Colors';
 import { useSelector, useDispatch } from 'react-redux';
@@ -17,76 +16,84 @@ import {
   pokemonDetails,
   getPokemonDetails,
 } from '../redux/PokemonDetailsSlice';
+import {
+  isFavorite,
+  addFavorite,
+  removeFavorite,
+} from '../redux/FavoritesSlice';
+import { PokemonBaseModel } from '../models/Pokemon.model';
 
 const WIDTH = Dimensions.get('window').width / 3;
 
-export const Pokemon = React.memo(
-  (props: {
-    item: {
-      name: string;
-      url: string;
-    };
-  }) => {
-    const navigation = useNavigation();
-    const dispatch = useDispatch();
-    const data = useSelector((state) => pokemonDetails(state, props.item.name));
+type PokemonProps = {
+  pokemon: PokemonBaseModel;
+};
 
-    useEffect(() => {
-      if (!data) {
-        dispatch(getPokemonDetails(props.item));
-      }
-    }, []);
+export const Pokemon = React.memo(({ pokemon }: PokemonProps) => {
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const data = useSelector((state) => pokemonDetails(state, pokemon.name));
+  const favorite = useSelector((state) => isFavorite(state, pokemon.name));
 
+  useEffect(() => {
     if (!data) {
-      return (
-        <View style={[styles.container, { justifyContent: 'center' }]}>
-          <ActivityIndicator size={'large'} color={'red'} />
-        </View>
-      );
+      dispatch(getPokemonDetails(pokemon));
     }
+  }, []);
 
+  if (!data) {
     return (
-      <TouchableOpacity
-        onPress={() => navigation.navigate('Details')}
-        style={styles.container}>
-        <Text style={{ color: Colors.white, alignSelf: 'flex-start' }}>
-          {data.order}
-        </Text>
-        <Image
-          // style={{ maxWidth: WIDTH, maxHeight: 100, backgroundColor: 'purple' }}
-          // resizeMode={'contain'}
-          resizeMode={'contain'}
-          style={{ width: '100%', height: (WIDTH * 1.5) / 2 }}
-          source={{
-            uri: data.sprites.front_default,
-          }}
-        />
-
-        <Text
-          style={{
-            color: Colors.white,
-            fontWeight: 'bold',
-            fontSize: 12,
-            marginTop: 5,
-          }}>
-          {`${data.order}-${data.name}`}
-        </Text>
-        <View style={{ flexDirection: 'row', marginTop: 7 }}>
-          {data.types.map((item) => {
-            return (
-              <Image
-                key={`PokemonType-${item.slot}`}
-                style={{ width: 20, height: 20 }}
-                resizeMode={'cover'}
-                source={TypeImages[item.type.name]}
-              />
-            );
-          })}
-        </View>
-      </TouchableOpacity>
+      <View style={[styles.container, { justifyContent: 'center' }]}>
+        <ActivityIndicator size={'large'} color={'red'} />
+      </View>
     );
-  },
-);
+  }
+
+  if (data.error) {
+    return null; //TODO
+  }
+
+  return (
+    <TouchableOpacity
+      onPress={() => navigation.navigate('Details', { pokemon })}
+      style={styles.container}>
+      <Text style={styles.orderText}>{data.order}</Text>
+
+      <TouchableOpacity
+        style={[
+          styles.favoriteIconContainer,
+          favorite && { backgroundColor: 'yellow' },
+        ]}
+        onPress={() => {
+          dispatch(favorite ? removeFavorite(pokemon) : addFavorite(pokemon));
+        }}
+      />
+      <Image
+        resizeMode={'contain'}
+        style={styles.image}
+        source={{
+          uri: data.sprites.front_default,
+        }}
+      />
+
+      <Text style={styles.nameText} numberOfLines={1}>
+        {data.name}
+      </Text>
+      <View style={styles.typesContainer}>
+        {data.types.map((item) => {
+          return (
+            <Image
+              key={`PokemonType-${item.slot}`}
+              style={styles.typeImage}
+              resizeMode={'cover'}
+              source={TypeImages[item.type.name]}
+            />
+          );
+        })}
+      </View>
+    </TouchableOpacity>
+  );
+});
 
 export default Pokemon;
 
@@ -101,5 +108,35 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     marginTop: 10,
+  },
+  orderText: {
+    color: Colors.white,
+    alignSelf: 'flex-start',
+  },
+  favoriteIconContainer: {
+    width: 20,
+    height: 20,
+    backgroundColor: 'red',
+    position: 'absolute',
+    top: 5,
+    right: 5,
+  },
+  image: {
+    width: '100%',
+    height: (WIDTH * 1.5) / 2,
+  },
+  nameText: {
+    color: Colors.white,
+    fontWeight: 'bold',
+    fontSize: 12,
+    marginTop: 5,
+  },
+  typesContainer: {
+    flexDirection: 'row',
+    marginTop: 7,
+  },
+  typeImage: {
+    width: 20,
+    height: 20,
   },
 });

@@ -20,8 +20,10 @@ import {
   isFavorite,
   addFavorite,
   removeFavorite,
+  toggleFavorite,
 } from '../redux/FavoritesSlice';
 import { PokemonBaseModel } from '../models/Pokemon.model';
+import Favorite from './Favorite';
 
 const WIDTH = Dimensions.get('window').width / 3;
 
@@ -59,14 +61,11 @@ export const Pokemon = React.memo(({ pokemon }: PokemonProps) => {
       style={styles.container}>
       <Text style={styles.orderText}>{data.order}</Text>
 
-      <TouchableOpacity
-        style={[
-          styles.favoriteIconContainer,
-          favorite && { backgroundColor: 'yellow' },
-        ]}
-        onPress={() => {
-          dispatch(favorite ? removeFavorite(pokemon) : addFavorite(pokemon));
-        }}
+      <Favorite
+        style={styles.favoriteIconContainer}
+        active={favorite}
+        onPress={() => dispatch(toggleFavorite(pokemon))}
+        size={20}
       />
       <Image
         resizeMode={'contain'}
@@ -114,12 +113,9 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   favoriteIconContainer: {
-    width: 20,
-    height: 20,
-    backgroundColor: 'red',
     position: 'absolute',
-    top: 5,
-    right: 5,
+    top: 7,
+    right: 7,
   },
   image: {
     width: '100%',

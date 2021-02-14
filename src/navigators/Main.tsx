@@ -5,12 +5,12 @@ import TabNavigator from './Tab';
 
 import { Details } from '../screens';
 import { HeaderLogo } from '../components';
-import { PokemonBasicModel } from '../models/Pokemon.model';
+import { PokemonBaseModel } from '../models/Pokemon.model';
 
 export type MainNavigatorParamList = {
   Home: undefined;
   Details: {
-    pokemon: PokemonBasicModel;
+    pokemon: PokemonBaseModel;
   };
 };
 

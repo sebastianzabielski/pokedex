@@ -111,6 +111,8 @@ const styles = StyleSheet.create({
   orderText: {
     color: Colors.white,
     alignSelf: 'flex-start',
+    fontWeight: 'bold',
+    fontSize: 11,
   },
   favoriteIconContainer: {
     position: 'absolute',

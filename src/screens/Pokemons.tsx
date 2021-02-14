@@ -21,7 +21,7 @@ export const Footer = () => {
   const isFetching = useSelector(fetching);
 
   if (isFetching) {
-    return <Loader style={{ marginTop: 10 }} />;
+    return <Loader style={styles.loader} />;
   }
 
   return null;
@@ -66,6 +66,9 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: 10,
     paddingBottom: 30,
+  },
+  loader: {
+    marginTop: 10,
   },
 });
 

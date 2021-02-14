@@ -41,7 +41,7 @@ export const Details = ({ route }: DetailsProps) => {
     ({ item }: { item: PokemonDetailsStatsModel }) => (
       <View style={styles.columnListItemContainer}>
         <Text style={styles.typeText}>{Translation[item.stat.name]}</Text>
-        <Text style={{ color: Colors.white }}>{item.base_stat}</Text>
+        <Text style={styles.baseStatText}>{item.base_stat}</Text>
       </View>
     ),
     [],
@@ -160,6 +160,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     marginTop: 10,
+  },
+  baseStatText: {
+    color: Colors.white,
   },
 });
 

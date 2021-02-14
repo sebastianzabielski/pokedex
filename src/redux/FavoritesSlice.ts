@@ -1,12 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from './Store';
-import { PokemonBasicModel } from '../models/Pokemon.model';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { PokemonBaseModel } from '../models/Pokemon.model';
+import { FavoritesModel } from '../models/Favorites.model';
+import { setFavorites } from '../services/Storage';
 
 type State = {
-  list: {
-    [key: string]: PokemonBasicModel;
-  };
+  list: FavoritesModel;
 };
 
 const initialState: State = {
@@ -20,13 +19,13 @@ export const slice = createSlice({
     setList: (state, action: PayloadAction<State['list']>) => {
       state.list = action.payload;
     },
-    add: (state, action: PayloadAction<PokemonBasicModel>) => {
+    add: (state, action: PayloadAction<PokemonBaseModel>) => {
       state.list[action.payload.name] = action.payload;
-      AsyncStorage.setItem('favorites', JSON.stringify(state.list));
+      setFavorites(state.list);
     },
-    remove: (state, action: PayloadAction<PokemonBasicModel>) => {
+    remove: (state, action: PayloadAction<PokemonBaseModel>) => {
       delete state.list[action.payload.name];
-      AsyncStorage.setItem('favorites', JSON.stringify(state.list));
+      setFavorites(state.list);
     },
   },
 });

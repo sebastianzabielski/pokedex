@@ -126,6 +126,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 12,
     marginTop: 5,
+    textTransform: 'capitalize',
   },
   typesContainer: {
     flexDirection: 'row',

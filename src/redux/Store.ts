@@ -1,10 +1,12 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import PokemonList from './PokemonListSlice';
 import PokemonDetailsSlice from './PokemonDetailsSlice';
+import FavoritesSlice from './FavoritesSlice';
 
 const rootReducer = combineReducers({
   list: PokemonList,
   details: PokemonDetailsSlice,
+  favorites: FavoritesSlice,
 });
 
 const store = configureStore({

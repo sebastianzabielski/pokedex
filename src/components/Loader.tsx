@@ -5,9 +5,10 @@ import {
   ActivityIndicator,
   ActivityIndicatorProps,
 } from 'react-native';
+import Colors from '../styles/Colors';
 
 const Loader = (props: ActivityIndicatorProps) => {
-  return <ActivityIndicator size={'small'} color={'red'} {...props} />;
+  return <ActivityIndicator size={'small'} color={Colors.white} {...props} />;
 };
 
 export default Loader;

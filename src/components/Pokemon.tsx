@@ -24,6 +24,7 @@ import {
 } from '../redux/FavoritesSlice';
 import { PokemonBaseModel } from '../models/Pokemon.model';
 import Favorite from './Favorite';
+import Loader from './Loader';
 
 const WIDTH = Dimensions.get('window').width / 3;
 
@@ -45,14 +46,14 @@ export const Pokemon = React.memo(({ pokemon }: PokemonProps) => {
 
   if (!data) {
     return (
-      <View style={[styles.container, { justifyContent: 'center' }]}>
-        <ActivityIndicator size={'large'} color={'red'} />
+      <View style={[styles.container, styles.loaderContainer]}>
+        <Loader size={'large'} />
       </View>
     );
   }
 
   if (data.error) {
-    return null; //TODO
+    return <View style={styles.container} />;
   }
 
   return (
@@ -138,4 +139,5 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
   },
+  loaderContainer: { justifyContent: 'center' },
 });

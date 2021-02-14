@@ -66,7 +66,7 @@ export default TypePicker;
 
 const styles = StyleSheet.create({
   container: {
-    maxHeight: 150,
+    maxHeight: 200,
     width: '100%',
     paddingVertical: 10,
   },
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   },
   listComponentContainer: {
     width: '100%',
-    padding: 5,
+    padding: 8,
     borderRadius: 8,
   },
   selectedListComponentContainer: {

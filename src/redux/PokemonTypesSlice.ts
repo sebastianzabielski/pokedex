@@ -2,7 +2,7 @@ import { createSlice, PayloadAction, Dispatch } from '@reduxjs/toolkit';
 import { RootState } from './Store';
 import { PokemonBaseModel } from '../models/Pokemon.model';
 import Api from '../services/Api';
-
+import { getPokemonByTypeList, getPokemonList } from './PokemonListSlice';
 type State = {
   list: PokemonBaseModel[];
   selected: string;
@@ -32,6 +32,17 @@ export const slice = createSlice({
 });
 
 export const { setList, select, setError } = slice.actions;
+
+export const selectType = (pokemon: PokemonBaseModel) => async (
+  dispatch: Dispatch<any>,
+) => {
+  dispatch(select(pokemon.name));
+  dispatch(
+    pokemon.name === 'all'
+      ? getPokemonList(pokemon.url)
+      : getPokemonByTypeList(pokemon.url),
+  );
+};
 
 export const loadTypes = () => async (dispatch: Dispatch) => {
   try {

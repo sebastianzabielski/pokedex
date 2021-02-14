@@ -7,11 +7,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  typesList,
-  selected,
-  select as selectType,
-} from '../redux/PokemonTypesSlice';
+import { typesList, selected, selectType } from '../redux/PokemonTypesSlice';
 import { getPokemonByTypeList } from '../redux/PokemonListSlice';
 import { PokemonBaseModel } from '../models/Pokemon.model';
 import Colors from '../styles/Colors';
@@ -55,8 +51,7 @@ const TypePicker = () => {
           <TypeListItem
             type={item}
             onPress={() => {
-              dispatch(selectType(item.name));
-              dispatch(getPokemonByTypeList(item.url));
+              dispatch(selectType(item));
             }}
             isSelected={selectedName === item.name}
           />

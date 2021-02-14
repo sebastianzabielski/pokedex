@@ -85,7 +85,7 @@ export const Pokemon = React.memo(({ pokemon }: PokemonProps) => {
             <Image
               key={`PokemonType-${item.slot}`}
               style={styles.typeImage}
-              resizeMode={'cover'}
+              resizeMode={'contain'}
               source={TypeImages[item.type.name]}
             />
           );

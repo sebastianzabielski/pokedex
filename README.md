@@ -9,6 +9,8 @@ React Native pokedex app based on [pokeapi.co](https://pokeapi.co/)
 * React Hooks
 
 
-![img](images/home.png "Pokemon details")
 
-![img](images/details.png "Pokemon details")
+
+
+| ![img](images/home.png "Pokemon details") | ![img](images/details.png "Pokemon details") |
+|-------------------------------------------|----------------------------------------------|

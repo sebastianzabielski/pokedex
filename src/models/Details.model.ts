@@ -1,6 +1,6 @@
 import { PokemonBaseModel } from './Pokemon.model';
 import { Types } from './Types.model';
-
+import Translation from '../services/Translation';
 export type PokemonDetailsTypeModel = {
   name: Types;
   url: string;
@@ -10,7 +10,7 @@ export type PokemonDetailsStatsModel = {
   base_stat: number;
   effort: number;
   stat: {
-    name: string;
+    name: keyof typeof Translation;
     url: string;
   };
 };

@@ -24,7 +24,7 @@ const Header = ({ onPress, collapsed }: HeaderProps) => {
     <TouchableOpacity onPress={onPress} style={styles.headerContainer}>
       <Text style={styles.headerText}>Filter</Text>
       <AntDesign
-        name={collapsed ? 'up' : 'down'}
+        name={collapsed ? 'down' : 'up'}
         size={20}
         color={Colors.white}
       />

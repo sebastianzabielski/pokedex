@@ -11,6 +11,10 @@ type State = {
   error: boolean;
 };
 
+type TypeDetails = {
+  pokemon: { pokemon: PokemonBaseModel }[];
+};
+
 const initialState: State = {
   pokemonList: [],
   fetching: false,
@@ -54,15 +58,15 @@ export const {
 
 export const pokemonList = (state: RootState) =>
   state.list.pokemonList.filter((item) =>
-    item.name.toLowerCase().includes(state.list.searchName),
+    item.name.toLowerCase().includes(state.list.searchName.toLowerCase()),
   );
 
 export const fetching = (state: RootState) => state.list.fetching;
 
-//TODO refactor below
 let getListLocked = false;
-export const getPokemonList = (url: string = 'pokemon/') => async (
+const getPokemonListDecorator = async (
   dispatch: Dispatch,
+  fetchData: () => Promise<PokemonBaseModel[]>,
 ) => {
   if (getListLocked) {
     return;
@@ -72,11 +76,8 @@ export const getPokemonList = (url: string = 'pokemon/') => async (
   clearQueue();
   dispatch(setPokemonList([]));
   try {
-    const data: {
-      results: PokemonBaseModel[];
-      next: string;
-    } = await fetchPokemonList(url);
-    dispatch(setPokemonList(data.results));
+    const data = await fetchData();
+    dispatch(setPokemonList(data));
     dispatch(setFetchingStatus(false));
   } catch (err) {
     dispatch(setError(true));
@@ -85,28 +86,27 @@ export const getPokemonList = (url: string = 'pokemon/') => async (
   getListLocked = false;
 };
 
+export const getPokemonList = (url: string = 'pokemon/') => async (
+  dispatch: Dispatch,
+) => {
+  const fetchMethod = async () => {
+    const data: {
+      results: PokemonBaseModel[];
+    } = await fetchPokemonList(url);
+    return data.results;
+  };
+
+  getPokemonListDecorator(dispatch, fetchMethod);
+};
+
 export const getPokemonByTypeList = (url: string) => async (
   dispatch: Dispatch,
 ) => {
-  if (getListLocked) {
-    return;
-  }
-  getListLocked = true;
-  clearQueue();
-  dispatch(setPokemonList([]));
-  dispatch(setFetchingStatus(true));
-  try {
-    const data: {
-      pokemon: PokemonBaseModel[]; //TODO fix type
-    } = await fetchPokemonList(url);
-
-    dispatch(setPokemonList(data.pokemon.map((item) => item.pokemon)));
-    dispatch(setFetchingStatus(false));
-  } catch (err) {
-    dispatch(setError(true));
-  } finally {
-    getListLocked = false;
-  }
+  const fetchMethod = async () => {
+    const data: TypeDetails = await fetchPokemonList(url);
+    return data.pokemon.map((item) => item.pokemon);
+  };
+  getPokemonListDecorator(dispatch, fetchMethod);
 };
 
 const fetchPokemonList = async (url: string) => {

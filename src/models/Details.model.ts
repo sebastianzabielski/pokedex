@@ -6,6 +6,15 @@ export type PokemonDetailsTypeModel = {
   url: string;
 };
 
+export type PokemonDetailsStatsModel = {
+  base_stat: number;
+  effort: number;
+  stat: {
+    name: string;
+    url: string;
+  };
+};
+
 export type PokemonDetailsModel = {
   order: number;
   name: string;
@@ -16,4 +25,5 @@ export type PokemonDetailsModel = {
   sprites: {
     front_default: string;
   };
+  stats: PokemonDetailsStatsModel[];
 };

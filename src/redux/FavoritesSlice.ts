@@ -27,6 +27,14 @@ export const slice = createSlice({
       delete state.list[action.payload.name];
       setFavorites(state.list);
     },
+    toggle: (state, action: PayloadAction<PokemonBaseModel>) => {
+      if (state.list[action.payload.name]) {
+        delete state.list[action.payload.name];
+      } else {
+        state.list[action.payload.name] = action.payload;
+      }
+      setFavorites(state.list);
+    },
   },
 });
 
@@ -34,6 +42,7 @@ export const {
   setList,
   add: addFavorite,
   remove: removeFavorite,
+  toggle: toggleFavorite,
 } = slice.actions;
 
 export const favoriteList = (state: RootState) =>

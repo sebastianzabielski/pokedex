@@ -20,8 +20,11 @@ import {
   isFavorite,
   addFavorite,
   removeFavorite,
+  toggleFavorite,
 } from '../redux/FavoritesSlice';
 import { PokemonBaseModel } from '../models/Pokemon.model';
+import Favorite from './Favorite';
+import Loader from './Loader';
 
 const WIDTH = Dimensions.get('window').width / 3;
 
@@ -43,14 +46,14 @@ export const Pokemon = React.memo(({ pokemon }: PokemonProps) => {
 
   if (!data) {
     return (
-      <View style={[styles.container, { justifyContent: 'center' }]}>
-        <ActivityIndicator size={'large'} color={'red'} />
+      <View style={[styles.container, styles.loaderContainer]}>
+        <Loader size={'large'} />
       </View>
     );
   }
 
   if (data.error) {
-    return null; //TODO
+    return <View style={styles.container} />;
   }
 
   return (
@@ -59,14 +62,11 @@ export const Pokemon = React.memo(({ pokemon }: PokemonProps) => {
       style={styles.container}>
       <Text style={styles.orderText}>{data.order}</Text>
 
-      <TouchableOpacity
-        style={[
-          styles.favoriteIconContainer,
-          favorite && { backgroundColor: 'yellow' },
-        ]}
-        onPress={() => {
-          dispatch(favorite ? removeFavorite(pokemon) : addFavorite(pokemon));
-        }}
+      <Favorite
+        style={styles.favoriteIconContainer}
+        active={favorite}
+        onPress={() => dispatch(toggleFavorite(pokemon))}
+        size={20}
       />
       <Image
         resizeMode={'contain'}
@@ -85,7 +85,7 @@ export const Pokemon = React.memo(({ pokemon }: PokemonProps) => {
             <Image
               key={`PokemonType-${item.slot}`}
               style={styles.typeImage}
-              resizeMode={'cover'}
+              resizeMode={'contain'}
               source={TypeImages[item.type.name]}
             />
           );
@@ -112,14 +112,13 @@ const styles = StyleSheet.create({
   orderText: {
     color: Colors.white,
     alignSelf: 'flex-start',
+    fontWeight: 'bold',
+    fontSize: 11,
   },
   favoriteIconContainer: {
-    width: 20,
-    height: 20,
-    backgroundColor: 'red',
     position: 'absolute',
-    top: 5,
-    right: 5,
+    top: 7,
+    right: 7,
   },
   image: {
     width: '100%',
@@ -130,6 +129,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 12,
     marginTop: 5,
+    textTransform: 'capitalize',
   },
   typesContainer: {
     flexDirection: 'row',
@@ -139,4 +139,5 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
   },
+  loaderContainer: { justifyContent: 'center' },
 });
